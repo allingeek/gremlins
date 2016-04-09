@@ -28,6 +28,7 @@ ACCUMULO_USER =os.getenv("ACCUMULO_USER", "accumulo")
 SUDO=os.getenv("SUDO", "sudo")
 LSOF=os.getenv("LSOF", "lsof")
 JPS=os.getenv("JPS", "jps")
+PGREP=os.getenv("PGREP", "pgrep")
 
 START_COMMANDS = {
   'HRegionServer': [HBASE_HOME + "/bin/hbase-daemon.sh", "start", "regionserver"],
@@ -42,6 +43,7 @@ def run(cmdv):
   Throws an exception if it has a nonzero exit code.
   Returns the output of the command.
   """
+  logging.info("running %s" % str(cmdv))
   proc = subprocess.Popen(args=cmdv, stdout=subprocess.PIPE)
   (out, err) = proc.communicate()
   if proc.returncode != 0:
@@ -74,6 +76,25 @@ def find_jvm(java_command):
       return int(pid)
   logging.info("Found no running %s" % java_command)
   return None
+
+def find_process(command_with_args):
+  """
+  Find the process using the provided command with arguments
+
+  Returns the pid of this process, or None if it is not running.
+  """
+  # need to find a way to make pgrep exit 0, even when processes are not found
+  pids = run([PGREP, "-f", command_with_args]).split("\n")
+  logging.info("PGREP returned: %s" % (str(pids)))
+  for pid in pids:
+    if not pid: continue
+    logging.info("pid of PGREP output: '%s'", pid)
+    if pid:
+      logging.info("Found %s: pid %s" % (command_with_args, pid))
+      return int(pid)
+    else:
+      logging.info("Found no running %s" % command_with_args)
+      return None
 
 def get_listening_ports(pid):
   """Given a pid, return a list of TCP ports it is listening on."""

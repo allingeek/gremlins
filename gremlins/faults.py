@@ -49,6 +49,25 @@ def kill_daemons(daemons, signal, restart_after):
       procutils.start_daemon(daemon)
   return do
 
+def kill_processes(processes, signal):
+  """Kill the given processes with the given signal, then
+  restart them after the given number of seconds.
+
+  @param processes: the names of the process (e.g. `nc`)
+  @param signal: signal to kill with
+  """
+  def do():
+    # First kill
+    for process in processes:
+      pid = procutils.find_process(process)
+      if pid:
+        logging.info("Killing %s pid %d with signal %d" % (process, pid, signal))
+        os.kill(pid, signal)
+      else:
+        logging.info("There was no %s running!" % process)
+
+  return do
+
 def pause_daemons(jvm_names, seconds):
   """
   Pause the given daemons for some period of time using SIGSTOP/SIGCONT
@@ -74,6 +93,34 @@ def pause_daemons(jvm_names, seconds):
       pid = procutils.find_jvm(jvm_name)
       if pid:
         logging.warn("Resuming %s pid %d" % (jvm_name, pid))
+        os.kill(pid, signal.SIGCONT)
+  return do
+
+def pause_processes(processes, seconds):
+  """
+  Pause the given processes for some period of time using SIGSTOP/SIGCONT
+
+  @param processes: the command used to start the process to pause, will be passed to "pgrep -f <command>"
+  @param seconds: the number of seconds to pause for
+  """
+  def do():
+    # Stop all processes, record their pids
+    for process in processes:
+      pid = procutils.find_process(process)
+      if not pid:
+        logging.warn("No pid found for %s" % process)
+        continue
+      logging.warn("Suspending %s pid %d for %d seconds" % (process, pid, seconds))
+      os.kill(pid, signal.SIGSTOP)
+
+    # Pause for prescribed amount of time
+    time.sleep(seconds)
+
+    # Resume them
+    for process in processes:
+      pid = procutils.find_process(process)
+      if pid:
+        logging.warn("Resuming %s pid %d" % (process, pid))
         os.kill(pid, signal.SIGCONT)
   return do
 

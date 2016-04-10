@@ -37,7 +37,7 @@ START_COMMANDS = {
 }
 
 
-def run(cmdv):
+def run(cmdv, assert_return_code_zero=True):
   """Run a command.
 
   Throws an exception if it has a nonzero exit code.
@@ -46,7 +46,7 @@ def run(cmdv):
   logging.info("running %s" % str(cmdv))
   proc = subprocess.Popen(args=cmdv, stdout=subprocess.PIPE)
   (out, err) = proc.communicate()
-  if proc.returncode != 0:
+  if assert_return_code_zero and proc.returncode != 0:
     raise Exception("Bad status code: %d" % proc.returncode)
   return out
 
@@ -84,7 +84,7 @@ def find_process(command_with_args):
   Returns the pid of this process, or None if it is not running.
   """
   # need to find a way to make pgrep exit 0, even when processes are not found
-  pids = run([PGREP, "-f", command_with_args]).split("\n")
+  pids = run([PGREP, "-f", command_with_args], assert_return_code_zero=False).split("\n")
   logging.info("PGREP returned: %s" % (str(pids)))
   for pid in pids:
     if not pid: continue

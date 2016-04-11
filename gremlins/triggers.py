@@ -28,6 +28,14 @@ from gremlins import faults, metafaults
 class Trigger(object):
   pass
 
+class OneShot(Trigger):
+
+  def __init__(self, action):
+    self.action = action
+
+  def start(self):
+    self.action()
+
 class Periodic(Trigger):
   def __init__(self, period, fault):
     self.period = period

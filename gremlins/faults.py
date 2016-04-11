@@ -16,7 +16,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from gremlins import procutils, iptables
+from gremlins import procutils, iptables, tc
 import signal
 import os
 import subprocess
@@ -202,4 +202,22 @@ def fail_network(bastion_host, seconds, restart_daemons=None, use_flush=False):
       logging.info("Restarting daemons: %s", repr(restart_daemons))
       for daemon in restart_daemons:
         procutils.start_daemon(daemon)
+  return do
+
+def clear_network_faults():
+  """
+  Clears the network configuration of faults introduced by gremlins
+  """
+  def do():
+    tc.clear_faults()
+
+  return do
+
+def introduce_network_packet_loss():
+  """
+  Introduce packet loss into the network configuration
+  """
+  def do():
+    tc.introduce_packet_loss()
+
   return do

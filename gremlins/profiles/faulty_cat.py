@@ -4,6 +4,7 @@ from gremlins import faults, metafaults, triggers, tc
 
 clear_network_faults = faults.clear_network_faults()
 introduce_packet_loss = faults.introduce_network_packet_loss()
+introduce_partition = faults.introduce_network_partition()
 
 server_cmd = "nc.*4242"
 nc_kill = faults.kill_processes([server_cmd], signal.SIGKILL)
@@ -22,6 +23,7 @@ profile = [
         10, metafaults.pick_fault([
             (10, clear_network_faults),
             (10, introduce_packet_loss),
+            (10, introduce_partition),
         ])),
     #  triggers.WebServerTrigger(12321)
 ]

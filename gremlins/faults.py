@@ -221,3 +221,12 @@ def introduce_network_packet_loss():
     tc.introduce_packet_loss()
 
   return do
+
+def introduce_network_partition():
+  """
+  Introduce a partition (100% packet loss) into the network configuration
+  """
+  def do():
+    tc.introduce_partition()
+
+  return do

@@ -38,9 +38,14 @@ def _add_fault(fault):
         call(cmd, exit_on_fail=False)
         #procutils.run(("tc qdisc del dev %s root" % (iface)).split(" "), assert_return_code_zero=False)
 
-def introduce_packet_loss():
+def introduce_packet_loss(packet_loss_percentage=random.randint(1, 100)):
     """introduce pocket loss"""
-    _add_fault("netem loss %d%%"%(random.randint(5, 10)))
+    clear_faults()
+    _add_fault("netem loss %d%%" % (packet_loss_percentage))
+
+def introduce_partition():
+    """introduce network partition"""
+    introduce_packet_loss(100)
 
 class Partition:
     # Partition the current server from all other servers

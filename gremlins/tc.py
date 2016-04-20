@@ -32,15 +32,6 @@ def introduce_partition():
     """introduce network partition"""
     introduce_packet_loss(100)
 
-class Partition:
-    # Partition the current server from all other servers
-
-    def action(self):
-        return "netem loss 100%"
-
-    def desc(self):
-        return "network partition"
-
 class PacketLoss:
     # Drop packets with some probability
 

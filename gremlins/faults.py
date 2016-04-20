@@ -22,6 +22,7 @@ import os
 import subprocess
 import logging
 import time
+import random
 
 def kill_daemons(daemons, signal, restart_after):
   """Kill the given daemons with the given signal, then
@@ -228,5 +229,26 @@ def introduce_network_partition():
   """
   def do():
     tc.introduce_partition()
+
+  return do
+
+
+def introduce_packet_reordering():
+  """
+  Introduce re-ordering of packets with probability of re-rodering between 10-75%
+  """
+  def do():
+    reorder_probability = random.randint(10, 75)
+    tc.introduce_packet_reordering(reorder_probability=reorder_probability)
+
+  return do
+
+
+def introduce_network_latency():
+  """
+  Introduce latency into the delivery of packets across the network
+  """
+  def do():
+    tc.introduce_latency()
 
   return do

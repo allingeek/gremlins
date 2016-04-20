@@ -32,35 +32,16 @@ def introduce_partition():
     """introduce network partition"""
     introduce_packet_loss(100)
 
-class Latency:
-    # Add latency to all packets
+def introduce_latency():
+    latency = random.randint(100, 1000)
+    _add_fault("netem delay %dms" % (latency))
 
-    def __init__(self):
-        # per-packet delay in ms
-        self.latency = random.randint(100, 1000)
-
-    def action(self):
-        return "netem delay %dms"%(self.latency)
-
-    def desc(self):
-        return "delay of %dms"%(self.latency)
-
-class Reorder:
-    # Reorder packets
-
-    def __init__(self):
-        # probability of continuing the delay
-        self.correlation = 50
-
-        # initial packet delay
-        self.delay = 10
-
-        # probability of reordering a packet
-        self.reorder = random.randint(10, 75)
-
-    def action(self):
-        return "netem delay %sms reorder %d%% %d%%" % (self.delay, 100-self.reorder, self.correlation)
-
-    def desc(self):
-        return "reorder after delay of %dms with probability %d and correlation %d" % (self.delay, 100-self.reorder, self.correlation)
+def introduce_packet_reordering(delay_in_ms = 10, reorder_probability = 50, correlation=50):
+    """
+    :param delay_in_ms: initial packet delay in milliseconds
+    :param reorder_probability: probability packets will be reordered, defaults to 50%
+    :param correlation: probability of continuing the delay
+    :return:
+    """
+    _add_fault("netem delay %sms reorder %d%% %d%%" % (delay_in_ms, 100 - reorder_probability, correlation))
 

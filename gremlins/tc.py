@@ -1,7 +1,6 @@
 from gremlins import procutils
 import random
 import logging
-import subprocess
 
 # use the 'tc' command from the iproute2 package to inject and remove faults to/from the network interface
 
@@ -12,31 +11,17 @@ def die(msg):
     logging.error(msg)
     exit(1)
 
-def call(cmd, exit_on_fail=True):
-    logging.info(cmd)
-    res = subprocess.call(cmd, shell=True, stderr=subprocess.STDOUT)
-    if res != 0 and exit_on_fail:
-        die("error: subprocess returned %d (not 0)"%(res))
-        return res
-
-
 def clear_faults():
     """undo all currently enabled faults"""
     logging.info("Clearing network faults")
-    #for iface in settings.interfaces:
     for iface in ['eth0']:
-        cmd = "tc qdisc del dev %s root" % (iface)
-        call(cmd, exit_on_fail=False)
-        #procutils.run(("tc qdisc del dev %s root" % (iface)).split(" "), assert_return_code_zero=False)
+        procutils.run(("tc qdisc del dev %s root" % (iface)).split(" "), assert_return_code_zero=False)
 
 def _add_fault(fault):
     """add a network fault"""
     logging.info("Adding network fault: %s" % (fault))
-    #for iface in settings.interfaces:
     for iface in ['eth0']:
-        cmd = "tc qdisc add dev %s root %s" % (iface, fault)
-        call(cmd, exit_on_fail=False)
-        #procutils.run(("tc qdisc del dev %s root" % (iface)).split(" "), assert_return_code_zero=False)
+        procutils.run(("tc qdisc add dev %s root %s" % (iface, fault)).split(" "), assert_return_code_zero=False)
 
 def introduce_packet_loss(packet_loss_percentage=random.randint(1, 100)):
     """introduce pocket loss"""

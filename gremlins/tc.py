@@ -32,19 +32,6 @@ def introduce_partition():
     """introduce network partition"""
     introduce_packet_loss(100)
 
-class PacketLoss:
-    # Drop packets with some probability
-
-    def __init__(self):
-        # percentage probability of dropping a packet
-        self.loss = random.randint(5, 10)
-
-    def action(self):
-        return "netem loss %d%%"%(self.loss)
-
-    def desc(self):
-        return "drop packets with probability %d%%"%(self.loss)
-
 class Latency:
     # Add latency to all packets
 

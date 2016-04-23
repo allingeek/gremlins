@@ -6,3 +6,5 @@ ADD setup.py  /app/setup.py
 
 WORKDIR /app
 RUN python setup.py develop
+
+VOLUME /app/gremlins/profiles

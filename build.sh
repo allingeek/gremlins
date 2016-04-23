@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-docker build --tag qualimente/gremlins:latest .
+commit_id=$(git rev-parse --short --verify HEAD)
+image_repo="qualimente/gremlins"
+
+docker build --tag ${image_repo}:latest --tag ${image_repo}:${commit_id} .

@@ -2,7 +2,7 @@
 
 #
 # Validate input:
-#   ENTROPY_FAULTS
+#   ENTROPY_FAILURES
 #     - present
 #     - valid and defined by image
 #   ENTROPY_FREQUENCY
@@ -23,8 +23,8 @@ if [ -z "$ENTROPY_FREQUENCY" ]; then
   exit 1
 fi
 
-if [ -z "$ENTROPY_FAULTS" ]; then
-  echo >&2 '[ERROR]: specify ENTROPY_FAULTS environment variable'
+if [ -z "$ENTROPY_FAILURES" ]; then
+  echo >&2 '[ERROR]: specify ENTROPY_FAILURES environment variable'
   exit 1
 fi
 
@@ -32,15 +32,15 @@ fi
 # Generate profile
 #
 ENTROPY_CLEAR_WEIGHT="$(echo 1 - $ENTROPY_PROBABILITY | bc)"
-ENTROPY_FAULT_WEIGHT=$ENTROPY_PROBABILITY
+ENTROPY_FAILURE_WEIGHT=$ENTROPY_PROBABILITY
 cat profile.tmpl | \
   sed "s/ENTROPY_SECONDS/${ENTROPY_FREQUENCY}/" | \
-  sed "s/ENTROPY_FAULT_WEIGHT/${ENTROPY_FAULT_WEIGHT}/" | \
+  sed "s/ENTROPY_FAILURE_WEIGHT/${ENTROPY_FAILURE_WEIGHT}/" | \
   sed "s/ENTROPY_CLEAR_WEIGHT/${ENTROPY_CLEAR_WEIGHT}/" | \
-  sed "s/ENTROPY_FAULT/${ENTROPY_FAULTS}/" \
+  sed "s/ENTROPY_FAILURE/${ENTROPY_FAILURES}/" \
   > ./gremlins/profiles/entropy.py
 
-printf "[%s, %s, %s]" $ENTROPY_FAULTS $ENTROPY_FREQUENCY $ENTROPY_PROBABILITY
+printf "[%s, %s, %s]" $ENTROPY_FAILURES $ENTROPY_FREQUENCY $ENTROPY_PROBABILITY
 
 #
 # Start gremlins

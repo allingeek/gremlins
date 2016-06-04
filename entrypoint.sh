@@ -27,6 +27,15 @@ if [ -z "$ENTROPY_FAILURES" ]; then
   echo >&2 '[ERROR]: specify ENTROPY_FAILURES environment variable'
   exit 1
 fi
+case $ENTROPY_FAILURES in
+  "network_packet_loss"|"network_partition"|"packet_reordering"|"network_latency")
+  ;;
+  *)
+    echo >&2 '[ERROR]: This image only supports one of the following failures: "network_packet_loss", "network_partition", "packet_reordering", or "network_latency"'
+    exit 1
+  ;;
+esac
+
 
 #
 # Generate profile

@@ -10,3 +10,4 @@ RUN python setup.py develop
 
 ADD entrypoint.sh /app/entrypoint.sh
 ENTRYPOINT ["/app/entrypoint.sh"]
+CMD ["gremlins","-m","gremlins.profiles.entropy","-p","entropy.profile"]

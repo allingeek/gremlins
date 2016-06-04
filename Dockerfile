@@ -1,6 +1,6 @@
 FROM python:2-alpine
 
-RUN mkdir -p /app
+RUN mkdir -p /app && apk add --update bc
 WORKDIR /app
 VOLUME ["/app/gremlins/profiles"]
 

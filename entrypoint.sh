@@ -28,7 +28,7 @@ if [ -z "$ENTROPY_FAILURES" ]; then
   exit 1
 fi
 case $ENTROPY_FAILURES in
-  "network_packet_loss"|"network_partition"|"packet_reordering"|"network_latency")
+  "packet_loss"|"partition"|"packet_reordering"|"latency")
   ;;
   *)
     echo >&2 '[ERROR]: This image only supports one of the following failures: "network_packet_loss", "network_partition", "packet_reordering", or "network_latency"'

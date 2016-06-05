@@ -49,8 +49,6 @@ cat profile.tmpl | \
   sed "s/ENTROPY_FAILURE/${ENTROPY_FAILURES}/" \
   > ./gremlins/profiles/entropy.py
 
-printf "[%s, %s, %s]" $ENTROPY_FAILURES $ENTROPY_FREQUENCY $ENTROPY_PROBABILITY
-
 #
 # Start gremlins
 #
